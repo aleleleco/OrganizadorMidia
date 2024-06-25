@@ -13,7 +13,6 @@ app = Flask(__name__)
 arquivosErro = []
 origemDestino = []
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -126,8 +125,7 @@ def deleta_pasta_vaza(patch):
             os.rmdir(pasta)
             print(f'pasta {pasta} vazia !! Pasta Deletada !!!')
 
-
-def lejson(arquivos_json, patch_destino, patch_raiz):
+def lejson(arquivosJson, patchDestino, patch_raiz):
     """
         corrigir a busca dos arquivos com final jpg(1).jpg
         esta gerando erro e nao está copiando
@@ -135,53 +133,55 @@ def lejson(arquivos_json, patch_destino, patch_raiz):
         juntar todos os arquivos em uma mesma pasta antes para juntar todos os json e imagens na mesma pasta
 
 
-    :param arquivos_json: lista dos arquivos json para verificar
-    :param patch_destino: caminho do destino dos arquivos
-    :param patch_raiz: caminho da pasta raiz onde estão os arquivos
+    :param arquivosJson:
+    :param patchDestino:
     :return:
     """
-    padrao = r"(?:\.jpg|\.png|\.JPG|\.PNG)$"  # padrao para busca dos arquivos que sao png e jpg
-    for patch_arquivo in arquivos_json:
+    padrao = r"(?:\.jpg|\.png|\.JPG|\.PNG)$"  #padrao para busca dos arquivos que sao png e jpg
+    for patchArquivo in arquivosJson:
         try:
-
-            with open(patch_arquivo, "r") as arquivo:
-                arquivo_json = json.load(arquivo)
-
-                resultado = re.search(padrao, arquivo_json['title'])
+            print(f'patch do arquivo de imagem {patchArquivo}')
+            with open(patchArquivo, "r") as arquivo:
+                arquivoJson = json.load(arquivo)
+                print(arquivoJson)
+                resultado = re.search(padrao, arquivoJson['title'])
                 if resultado:
-                    arquivo_imagem = patch_arquivo[:-5]
+                    arquivoImagem = patchArquivo[:-5]
                     # separar os arquivos e jogar nas pastas
                     #                        |STR| CONVERT PARA DATA   |INT| Data do arquivo json                    |
-                    pasta_gravar = buscapasta(
-                        str(datetime.fromtimestamp(int(arquivo_json['photoTakenTime']['timestamp']))),
-                        patch_destino)
+                    pastaGravar = buscapasta(str(datetime.fromtimestamp(int(arquivoJson['photoTakenTime']['timestamp']))),
+                                             patchDestino)
+                    #print(f'Local para gravar: {pastaGravar}')
 
+                    print(f'origem  {arquivoImagem}')
                     try:
-                        destino_imagem = f'{pasta_gravar}\\{str(arquivo_json['title'])}'
-                        dest = shutil.copy2(str(arquivo_imagem), str(destino_imagem))
-                        origemDestino.append([str(arquivo_imagem), str(destino_imagem)])
+                        destinoImagem = f'{pastaGravar}\\{str(arquivoJson['title'])}'
+                        print(f'destino {destinoImagem}')
+                        dest = shutil.copy2(str(arquivoImagem), str(destinoImagem))
+                        print(dest)
+                        origemDestino.append([str(arquivoImagem), str(destinoImagem)])
                     except Exception as e:
                         """
                             Faz a busca das imagens que nao foram encontradas na mesma pasta que o arquivo json está
                             em todas as pastas desde a raiz
                         """
-                        imagem_Encontrada = busca_imagem_perdida(str(arquivo_json['title']), patch_raiz)
+                        imagem_Encontrada = busca_imagem_perdida(str(arquivoJson['title']), patch_raiz)
                         if imagem_Encontrada:
                             try:
-                                dest = shutil.copy2(str(imagem_Encontrada), str(destino_imagem))
-                                origemDestino.append([str(arquivo_imagem), str(destino_imagem)])
+                                dest = shutil.copy2(str(imagem_Encontrada), str(destinoImagem))
+                                origemDestino.append([str(arquivoImagem), str(destinoImagem)])
                             except Exception as e2:
-                                arquivosErro.append([str(arquivo_imagem), e2])
+                                arquivosErro.append([str(arquivoImagem), e2])
                         else:
-                            arquivosErro.append([str(arquivo_imagem), e])
+                            arquivosErro.append([str(arquivoImagem),e])
                 else:
                     print(f'nao é imagem')
 
         except Exception as e:
-            arquivosErro.append(str(arquivo_json))
-
+            arquivosErro.append(str(arquivoJson))
 
 def le_exif(arquivo_imagem, patch_destino):
+
     for imagem in arquivo_imagem:
         try:
             image = Image.open(imagem)
@@ -194,7 +194,6 @@ def le_exif(arquivo_imagem, patch_destino):
                     origemDestino.append([str(imagem), str(pastaSalvar)])
         except Exception as e:
             arquivosErro.append(imagem)
-
 
 def leImages(listaImagens, patchDestino):
     for imagem in listaImagens:
@@ -210,17 +209,18 @@ def leImages(listaImagens, patchDestino):
             pastaSalvar = buscapasta(str(data_modificacao), patchDestino)
             dest = shutil.copy2(str(imagem), str(pastaSalvar))
             origemDestino.append([str(imagem), str(pastaSalvar)])
-
+            #print(origemDestino)
         except Exception as e:
-            arquivosErro.append([str(imagem), e])
-
+            arquivosErro.append(imagem)
+            #print(f"Ocorreu um erro: {e}")
 
 def busca_imagem_perdida(nome_imagem, patch_raiz):
+    print(f' busca imagem {nome_imagem} no patch {patch_raiz}')
     for raiz, _, arquivos in os.walk(patch_raiz):
+        #print(f'arquivos na busca do perdido {arquivos}')
         for arquivo in arquivos:
             if arquivo == nome_imagem:
                 return (f'{raiz}\\{arquivo}')
-
 
 def listar_arquivos(patch):
     """
@@ -232,7 +232,7 @@ def listar_arquivos(patch):
     listaArquivos = []
 
     for raiz, _, arquivos in os.walk(patch):  # retorna lista dos arquivos de cada pasta
-        # print(arquivos)
+        #print(arquivos)
         for arquivo in arquivos:
             caminhoCompleto = os.path.join(raiz, arquivo)  # caminho completo de cada arquivo
             listaArquivos.append(caminhoCompleto)
@@ -242,16 +242,16 @@ def listar_arquivos(patch):
 def buscapasta(dataArquivo, patchDestino):
     padrao = r"^(.{10})"
     dataCheia = re.search(padrao, dataArquivo)
-    # print(dataCheia.group(1))
+    #print(dataCheia.group(1))
     padrao = r"^(.{4})"
     dataAno = re.search(padrao, dataCheia.group(1))
-    # print(dataAno.group(1))
+    #print(dataAno.group(1))
     padrao = r"^.{5}(.{2})"
     dataMes = re.search(padrao, dataCheia.group(1))
     # print(dataMes.group(1))
     padrao = r".{2}$"
     datadia = re.search(padrao, dataCheia.group(1))
-    # print(datadia.group(0))
+    #print(datadia.group(0))
 
     caminho = str(patchDestino)
 
@@ -268,25 +268,25 @@ def buscapasta(dataArquivo, patchDestino):
         pass
     else:
         os.mkdir(caminho)
-        # print(f'pasta criada {caminho}')
+        #print(f'pasta criada {caminho}')
 
     caminho = f'{caminho}\\{dataMes.group(1)}'
     pasta = os.path.join(os.getcwd(), caminho)
     if os.path.exists(pasta):
-        # print(f'Pasta já existe')
+        #print(f'Pasta já existe')
         pass
     else:
         os.mkdir(caminho)
-        # print(f'pasta criada {caminho}')
+        #print(f'pasta criada {caminho}')
 
     caminho = f'{caminho}\\{datadia.group(0)}'
     pasta = os.path.join(os.getcwd(), caminho)
     if os.path.exists(pasta):
-        # print(f'Pasta já existe')
+        #print(f'Pasta já existe')
         pass
     else:
         os.mkdir(caminho)
-        # print(f'pasta criada {caminho}')
+        #print(f'pasta criada {caminho}')
 
     return caminho
 
@@ -300,7 +300,7 @@ def separaArquivos(listaArquivos, tipo):
                 'json' - retorna arquivos json
     :return: retorna uma lista com os arquivos listados
     """
-    # retorna somente imagens
+    #retorna somente imagens
     print('Lista arquivos')
     arquivosSeparados = []
     if tipo == 'imagens':
