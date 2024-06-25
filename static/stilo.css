@@ -1,0 +1,66 @@
+/* Estilizando tabelas */
+table {
+  border-collapse: collapse;
+  /* Define a borda da tabela */
+  border: 1px solid blue;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Define o estilo das células */
+th, td {
+  border: 1px solid blue;
+  padding: 5px; /* Espaçamento interno */
+  text-align: center; /* Alinhamento do texto no centro */
+  background-color: #E6F7FF; /* Fundo em tom de azul claro */
+  font-family: 'Times New Roman', Times, serif; /* Fonte do texto */
+  font-size: 12px; /* Tamanho da fonte */
+}
+
+th {
+  color: white;
+  background: #0000ff; /* Fundo mais escuro */
+}
+
+hr {
+  height: 10px;
+  border: 0;
+  box-shadow: 0 10px 10px -10px #333 inset;
+}
+
+.div_padrao {
+    font-size: 14px; /* Tamanho da fonte */
+    text-align: left; /* Alinhamento à esquerda */
+    background-color: #e6f0ff; /* Fundo azul claro */
+    width: 80%; /* preenchimento da tela */
+    margin: 0 auto;
+    padding: 5px; /* Espaço de 5px em todas as direções (topo, direita, baixo, esquerda) */
+    /* Outros estilos (margem, padding, etc.) podem ser adicionados conforme necessário */
+}
+
+.div_rodape {
+    font-size: 14px; /* Tamanho da fonte */
+    text-align: left; /* Alinhamento à esquerda */
+    background-color: #ff7863; /* Fundo azul claro */
+    width: 80%; /* preenchimento da tela */
+    margin: 0 auto;
+    padding: 5px; /* Espaço de 5px em todas as direções (topo, direita, baixo, esquerda) */
+    /* Outros estilos (margem, padding, etc.) podem ser adicionados conforme necessário */
+}
+
+form {
+    font-family: Arial, sans-serif; /* Fonte padrão */
+}
+
+input[type="text"], input[type="password"] {
+    border: 1px solid #ccc; /* Borda padrão */
+    border-radius: 5px; /* Bordas arredondadas */
+    box-shadow: none; /* Sem sombra */
+    padding: 5px; /* Espaçamento interno */
+    font-size: 14px; /* Tamanho da fonte */
+    /* Outros estilos (largura, altura, etc.) podem ser adicionados conforme necessário */
+}
+
+h1 {
+  color: blue; /* Cor azul */
+  text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+}

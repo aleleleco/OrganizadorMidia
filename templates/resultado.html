@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+{% block conteudo %}
+
+
+<div align="center">
+    <table border="1px" valign="center" bgcolor=#DCDCDC>
+        <thead>
+        <tr>
+            <th colspan="2">Processo concluido com sucesso</th>
+
+        </tr>
+        </thead>
+        <tr>
+            <td>Quantidade de arquivos copiados</td>
+            <td>{{ qtdCopiados }}</td>
+        </tr>
+        <tr>
+            <td>Quantidade de arquivos com erros</td>
+            <td>{{ qtdErros }}</td>
+        </tr>
+        <tr>
+            <td colspan="2">Um arquivo de log foi gerado em {{patchLog}}</td>
+        </tr>
+    </table>
+    <hr>
+
+</div>
+
+{% endblock %}

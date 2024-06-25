@@ -1,0 +1,106 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<div class="div_padrao">
+    <h1>Como utilizar</h1>
+    <h2>Este software tem como objetivo orgtanizar fotos, desenvolvido para subrir necessidade pessoal de organizar as fotos por pastas
+    levando em consideração a data de captura ou de edição</h2>
+    <h2>existem 3 maneira de utilizar este software</h2>
+    <ul>
+<li>Arquivos exportados google takeout - ao fazer o download dos arquivos do google takeout ele exporta as informações das imagens para um arquivos json contendo o mesmo nome da imagem atravez destes arquivos é possivel buscar a data que a imagem foi modificada e assim organizar por data</li>
+<li>Arquivos de imagens baixados - sem informação EXIF - Busca a data de alteraçào do properties da imagem</li>
+<li>Arquivos de imagens - con informação EXIF - Busca a data em que a foto foi tirada direto na informação EXIF da foto</li>
+</ul>
+</div><p></p>
+<div class="div_padrao">
+    <h2>Busca dados dos arquivos em Json (Exportados Google takeout)</h2>
+    <h3>Faz a busca da data em que foi realizada a captura da imagem em um arquivo json com os dados exif da foto,
+        utilizado normalmente quando feita a exportaçao dos daos pelo Google Takeout</h3>
+    <h3>Por padrao os arquivos exportaos vem com nome_arquivo.jpg, nome_arquivo.jpg.json</h3>
+    <h3>Quando exportado dados do Takeout ele gera arquivos em pastas e nao sao todos arquivos de img e json que ficam na mesma pasta, para uma busca mais precisa aconselhado deixar todos os arquivos na mesma pasta,
+    apesar do programa buscar as imagens em todoas as pastas, isto pode economizar muito tempo dependendo quantidade de imagens.
+    </h3>
+    <hr>
+    <h3>Preencha o caminho da pasta raiz onde estão todas as fotos e os arquivos .json exportados</h3>
+    <form action="{{ url_for('le_arquivos_json') }}" method="post">
+        <label>Caminho para busca:</label>
+        <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
+        <p>
+            <label>Destino:</label>
+            <input type="text" name="patchDestino" id="patchDestino" placeholder="Pasta raiz de destino">
+        </p>
+        <p> tipos de midia para buscar:
+            <label>JPG: </label>
+            <input type="checkbox" name="jpg" id="deletaEZipa">
+            <label>PNG: </label>
+            <input type="checkbox" name="png" id="deletaEZipa">
+            <label>MP4</label>
+            <input type="checkbox" name="mp4" id="deletaEZipa">
+
+        </p>
+        <p>
+            <label>Deletar arqruivos lidos</label>
+            <input type="checkbox" name="deletaEZipa" id="deletaEZipa">
+        </p>
+        <button type="submit">Organizar Arquivos</button>
+    </form>
+</div>
+<p>
+<div class="div_padrao">
+    <h2>Busca dados direto nos arquivos</h2>
+    <h3>Faz a busca nas propriedade dos arquivos, buscando data de modificação do arquivo, menos precisa do que quando
+        existe informaçào exif.</h3>
+    <hr>
+    <h3>Preencha o caminho da pasta raiz onde estão todas as fotos</h3>
+    <form action="{{ url_for('le_arquivos') }}" method="post">
+        <label>Caminho para busca:</label>
+        <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
+        <p>
+            <label>Destino:</label>
+
+            <input type="text" name="patchDestino" id="patchDestino" placeholder="Pasta raiz de destino">
+        <p>
+        <label>Deletar arqruivos lidos</label>
+            <input type="checkbox" name="deletaEZipa" id="deletaEZipa">
+        <label>Busca JPG</label>
+            <input type="checkbox" name="jpg" id="jpg">
+        <label>Busca PNG</label>
+            <input type="checkbox" name="PNG" id="PNG">
+        </p>
+        <button type="submit">Organizar Arquivos</button>
+    </form>
+
+    </div>
+   <p></p>
+    <div class="div_padrao">
+    <h2>Busca dados direto nos arquivos (EXIF)</h2>
+    <h3>Faz a busca nas propriedade dos arquivos, especifica quando existe informação EXIF, comun em imagens de cameras digitais e celuares possivel escolher qual o tipo de
+    arquivo ler</h3>
+    <hr>
+    <h3>Preencha o caminho da pasta raiz onde estão todas as fotos</h3>
+    <form action="{{ url_for('le_arquivos_exif') }}" method="post">
+        <label>Caminho para busca:</label>
+        <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
+        <p>
+            <label>Destino:</label>
+
+            <input type="text" name="patchDestino" id="patchDestino" placeholder="Pasta raiz de destino">
+        <p>
+            <label>Deletar e zipar arquivos das pastas antigas</label>
+            <input type="checkbox" name="deletaEZipa" id="deletaEZipa">
+        </p>
+        <p>
+            <label>Deletar pastas vazias : </label>
+            <input type="checkbox" name="deletaPastaVazia" id="deletaPastaVazia">
+        </p>
+        <button type="submit">Organizar Arquivos</button>
+    </form>
+</div>
+<p>
+<div class="div_rodape">
+    © 2024 Alessandro Silva. Todos os direitos reservados. Este software é fornecido sob a licença de uso livre, não é liberado para uso comercial.
+    Para mais informações, entre em contato com o desenvolvedor em ale.leleco@gmail.com ou visite o repositório no GitHub: link para o GitHub.
+
+
+</div>
+
+{% endblock %}
