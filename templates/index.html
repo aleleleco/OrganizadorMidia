@@ -1,110 +1,40 @@
 {% extends "template.html" %}
 {% block conteudo %}
-<div class="div_padrao">
-    <h1>Como utilizar</h1>
-    <h2>Para organização das midias em pastas pode ser utilizada buscando configurações direta do arquivo, das
-        propriedades EXIF, ou de arquivo json (utilizado pelo google takeout)</h2>
-    <ul>
-        <li>Buscar EXIF - <b>Melhor opção</b>, faz a busca das propriedades do EXIF de cada imagem. de acordo com a data de
-        criação organiza os arquivos</li>
-        <li>Buscar Propriedades do arquivo - Faz a busca das propriedades, apesar da informação existir pode não estar
-        de acordo com a correta data de criaçao do arquivo já que utiliza a data de modificação</li>
-        <li>Arquivos Json - Feito para buscar quando as imagens são esportadas do <b>Google takeout</b>, ele gera as informaçoes
-        em um arquivo json. Use somente para este tipo caso</li>
-    </ul>
-</div>
 <p></p>
 <div class="div_padrao">
-    <h2>Busca pelo EXIF dos arquivos</h2>
-    <p>Faz a busca nos arquivo pelas propriedades EXIF. Melhor opção para organização correta dos arquivos</p>
-    <hr>
-    <h3>Preencha o caminho da pasta raiz onde estão todas as fotos</h3>
-    <form action="{{ url_for('le_arquivos_exif') }}" method="post">
-        <label>Caminho para busca:</label>
-        <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
+    <form action="{{ url_for('le_multiplos_arquivos') }}" method="post">
         <p>
-            <label>Destino:</label>
-            <input type="text" name="patchDestino" id="patchDestino" placeholder="Pasta raiz de destino">
-        </p>
-        <p> tipos de imagens para buscar:</p>
-            <label>JPG: </label>
-            <input type="checkbox" name="jpg" id="jpg">
-            <label>PNG: </label>
-            <input type="checkbox" name="png" id="png">
-        <p>outros tipos de midias para buscar:</p>
-            <label>MP4: </label>
-            <input type="checkbox" name="mp4" id="mp4">
-        <p>
-            <label style="color: red;">Deletar arqruivos lidos, faz com que após a copia dos arquivos todos os arquivos
-                copiados sejam apagados da origem, tenha um bakcup para utilizar este recurso</label>
-            <input type="checkbox" name="deletaEZipa" id="deletaEZipa">
-        </p>
-        <button type="submit">Organizar Arquivos</button>
-    </form>
-</div>
-<p></p>
-<div class="div_padrao">
-    <h2>Busca propriedades dos arquivos</h2>
-    <p>Faz a busca nas propriedade dos arquivos, buscando data de modificação do arquivo, menos precisa do que quando
-        existe informaçào exif.</p>
-    <hr>
-    <h3>Preencha o caminho da pasta raiz onde estão todas as fotos</h3>
-    <form action="{{ url_for('le_arquivos') }}" method="post">
-        <label>Caminho para busca:</label>
-        <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
-        <p>
-            <label>Destino:</label>
-            <input type="text" name="patchDestino" id="patchDestino" placeholder="Pasta raiz de destino">
-        </p>
-        <p> tipos de imagens para buscar:</p>
-            <label>JPG: </label>
-            <input type="checkbox" name="jpg" id="jpg">
-            <label>PNG: </label>
-            <input type="checkbox" name="png" id="png">
-        <p>outros tipos de midias para buscar:</p>
-            <label>MP4: </label>
-            <input type="checkbox" name="mp4" id="mp4">
-        <p>
-            <label style="color: red;">Deletar arqruivos lidos, faz com que após a copia dos arquivos todos os arquivos
-                copiados sejam apagados da origem, tenha um bakcup para utilizar este recurso</label>
-            <input type="checkbox" name="deletaEZipa" id="deletaEZipa">
-        </p>
-        <button type="submit">Organizar Arquivos</button>
-    </form>
+            <label>Pasta Raiz dos arquivos:</label>
+            <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
 
-</div>
-<p></p>
-<div class="div_padrao">
-    <h2>Busca dados dos arquivos em Json (Exportados Google takeout)</h2>
-    <p>Faz a busca da data em que foi realizada a captura da imagem em um arquivo json com os dados exif da foto,
-        utilizado normalmente quando feita a exportaçao dos daos pelo Google Takeout</p>
-    <p>Por padrao os arquivos exportaos vem com nome_arquivo.jpg, nome_arquivo.jpg.json</p>
-    <p>Quando exportado dados do Takeout ele gera arquivos em pastas e nao sao todos arquivos de img e json que ficam
-        na mesma pasta, para uma busca mais precisa aconselhado deixar todos os arquivos na mesma pasta,
-        apesar do programa buscar as imagens em todoas as pastas, isto pode economizar muito tempo dependendo quantidade
-        de imagens.
-    </p>
-    <hr>
-    <h3>Preencha o caminho da pasta raiz onde estão todas as fotos e os arquivos .json exportados</h3>
-    <form action="{{ url_for('le_arquivos_json') }}" method="post">
-        <label>Caminho para busca:</label>
-        <input type="text" name="patch" id="patch" placeholder="Pasta raiz da busca">
+        </p>
         <p>
-            <label>Destino:</label>
+            <label>Pasta Raiz de destino:</label>
             <input type="text" name="patchDestino" id="patchDestino" placeholder="Pasta raiz de destino">
         </p>
-        <p> tipos de imagens para buscar:</p>
-            <label>JPG: </label>
-            <input type="checkbox" name="jpg" id="jpg">
-            <label>PNG: </label>
-            <input type="checkbox" name="png" id="png">
-        <p>outros tipos de midias para buscar:</p>
-            <label>MP4: </label>
-            <input type="checkbox" name="mp4" id="mp4">
+        <p>Tipos de imagens para buscar:</p>
+        <label>JPG: </label>
+        <input type="checkbox" name="jpg" id="jpg">
+        <label>PNG: </label>
+        <input type="checkbox" name="png" id="png">
+        <label>HEIC: </label>
+        <input type="checkbox" name="heic" id="heic">
+        <p>Outros tipos de midias para buscar:</p>
+        <label>MP4: </label>
+        <input type="checkbox" name="mp4" id="mp4">
+        <p>
+            <label for="tipo_busca">Origem das informações:</label>
+            <select id="tipo_busca", name="tipo_busca">
+                <option value="exif">EXIF - Melhor opção quando disponivel, comum e imagens de celulares e cameras</option>
+                <option value="json">JSON - Buscar dados dos arquivos de Json (arquivos exportados google takeout</option>
+                <option value="propriedades">PROPRIEDADES - Buscar das propriedades dos arquivos - Quando não tem informação EXIF</option>
+            </select>
+
+        </p>
         <p>
             <label style="color: red;">Deletar arqruivos lidos, faz com que após a copia dos arquivos todos os arquivos
                 copiados sejam apagados da origem, tenha um bakcup para utilizar este recurso</label>
-            <input type="checkbox" name="deletaEZipa" id="deletaEZipa">
+            <input type="checkbox" name="deleta_copiados" id="deleta_copiados">
         </p>
         <button type="submit">Organizar Arquivos</button>
     </form>
