@@ -27,6 +27,11 @@ class Midia:
     def get_copiada(self):
         return self.copiada
     
+    def set_copiada(self, copiada):
+        self.copiada = copiada
+    
+    
+    
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -50,13 +55,15 @@ def le_multiplos_arquivos():
     :return passa os arquivos para pasta especifica gerando log e uma tela de finalização
     """
     
+    #recebe os parametros dos forms
     extencoes = []
-    patch_origem = request.form['patch']
-    patch_destino = request.form['patchDestino']
-    deleta_copiados = request.form.get('deleta_copiados')
-    tipo_arquivo = request.form.get('tipo_busca')
-    gera_logs('inicio', None , str(patch_destino))
+    patch_origem = request.form['patch'] #raiz dos arquivos a serem ccopiados
+    patch_destino = request.form['patchDestino'] #raiz do destino dos arquivos
+    deleta_copiados = request.form.get('deleta_copiados') #opção de deletar arquivos já lidos
+    tipo_arquivo = request.form.get('tipo_busca') #tipo de arquivos que vai ler EXIF, JSON, PROPRIEDADES
+    gera_logs('inicio', None , str(patch_destino)) 
 
+    #Recebe os tipos de arquivos aque vai ler
     if request.form.get('png'):
         extencoes.append('png')
     if request.form.get('jpg'):
@@ -72,10 +79,12 @@ def le_multiplos_arquivos():
     print(f'tipo_arquivo : {tipo_arquivo}')
     print(f'extencoes : {extencoes}')
     print(f'---------------------------')
-    items = gera_arquivos(patch_origem)
-    arquivos = separaArquivos(items, tipo_arquivo, extencoes)
-    midias = cria_midia(arquivos, patch_destino)
     
+    items = gera_arquivos(patch_origem) #busca todos os arquivos nas pastas
+    arquivos = separaArquivos(items, tipo_arquivo, extencoes) #sera as extenções  que vai buscar
+    midias = cria_midia(arquivos, patch_destino) #gera os arquivos com objeto de midia
+    
+    #faz a separação por tipos de buscas
     match tipo_arquivo:
         case 'json':
             for midia in midias:
@@ -90,9 +99,25 @@ def le_multiplos_arquivos():
                 leImages(midia)
                 gera_logs('processo', midia, str(midia.destino))
     
+    #depois de copiados verifica pastas vazias para deletar
     deleta_pasta_vazia(patch_destino)
-            
+    
+    #deleta os arquivos já lidos. 
+    if deleta_copiados:
+        print('deleta arquivos')
+        arquivos_deletados=[]
+        for midia in midias:
+            if midia.get_copiada:
+                print(f'{str(midia.origem)}')
+                os.remove(f'{str(midia.origem)}')
+                arquivos_deletados.append(midia)
+        gera_logs('deletados',arquivos_deletados, str(patch_destino))
+        
+    
+    #gera os logs      
     gera_logs('fim', None, str(patch_destino))
+    
+    #retorno e finaliza o processo
     patch_log = f'{str(patch_destino)}\\MidaOraganizada.log'
     print('fim')
     return render_template('RESULTADO.html')
@@ -208,9 +233,9 @@ def leImages(img_obj):
             img_obj.pasta_salvar = buscapasta(str(img_obj.data_modificacao), img_obj.destino) 
                
         dest = shutil.copy2(str(img_obj.origem), str(img_obj.pasta_salvar))
-        img_obj.copiada = True
+        img_obj.set_copiada(True)
     except Exception as e:
-        img_obj.copiada = False
+        img_obj.set_copiada(False)
         img_obj.exception = e
         print(f"Ocorreu um erro: {e}")    
 
@@ -279,12 +304,11 @@ def buscapasta(dataArquivo, patchDestino):
     print(caminho)
     return caminho
 
-def deletar_arquivos_lidos(lista_lidos):
-    for listaArquivos in lista_lidos:
-        os.remove(listaArquivos[0])
-        os.remove(f'{str(listaArquivos[0])}.json')
-
 def deleta_pasta_vazia(patch):
+    """
+    deleta pastas vazias depois de copiados os arquivos
+    :param patch caminho raiz das pastas
+    """
     for pasta, subpasta, arquivo in os.walk(patch):
         if not subpasta and not arquivo:
             os.rmdir(pasta)
@@ -326,6 +350,9 @@ def gera_logs(tempo_exec, obj_img, patch_destino):
                 logging.info(f'Arquivo  {obj_img.nome} erro: {obj_img.exception}')
         case 'fim':
             logging.info(f'Fim do processamento as {datetime.now()}')
-
-
-#app.run(debug=True)
+        case 'deletados':
+            logging.info(f'Arquivos deletados do processamento: {len(obj_img)}')
+            for imagem in obj_img:
+                logging.info(f'>> {imagem.nome}')
+   
+app.run(debug=True)
